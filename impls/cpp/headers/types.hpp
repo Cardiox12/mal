@@ -13,6 +13,7 @@ namespace mal
         NIL,
         KEYWORD,
         BOOLEAN,
+        STRING,
     };
 
     class Type {
@@ -91,6 +92,15 @@ namespace mal
         Boolean(bool value);
         Boolean(std::string const &value);
         virtual ~Boolean() = default;
+
+        virtual std::string repr() const;
+    };
+
+    class String : public Type {
+        std::string m_value;
+    public:
+        String(std::string const &value);
+        virtual ~String() = default;
 
         virtual std::string repr() const;
     };

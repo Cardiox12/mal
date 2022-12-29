@@ -131,3 +131,13 @@ std::string
 mal::Boolean::repr() const {
     return (m_value) ? "true" : "false";
 }
+
+// Type string
+
+mal::String::String(std::string const &value) :
+    mal::Type(mal::TypeTag::STRING), m_value(value) { }
+
+std::string
+mal::String::repr() const {
+    return m_value;
+}

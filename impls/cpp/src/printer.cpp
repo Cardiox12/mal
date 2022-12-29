@@ -19,6 +19,8 @@ mal::pr_str(mal::Type *type) {
         type_tag = "boolean";
     else if (type->is(TypeTag::VECTOR))
         type_tag = "vector";
+    else if (type->is(TypeTag::STRING))
+        type_tag = "string";
     return "[" + type_tag + "] " + type->repr();
 #else
     return type->repr();

@@ -52,8 +52,8 @@ mal::read_form(Reader &reader) {
         return read_list(reader);
     else if ( *token == "[" )
         return read_vector(reader);
-    // if ( first == "{" )
-        // TODO: manage hashmap
+    else if ( *token == "{" )
+        return read_map(reader);
     return read_atom(reader);
 }
 
@@ -70,7 +70,7 @@ mal::read_list(Reader &reader) {
         list->add(read_form(reader));
     }
     delete list;
-    throw new ReadMissingClosingException(")");
+    throw new ReaderMissingClosingException(")");
 }
 
 mal::Type*
@@ -86,7 +86,13 @@ mal::read_vector(Reader &reader) {
         vec->add(read_form(reader));
     }
     delete vec;
-    throw new ReadMissingClosingException("]");
+    throw new ReaderMissingClosingException("]");
+}
+
+mal::Type*
+mal::read_map(Reader &reader) {
+    (void)reader;
+    return nullptr;
 }
 
 mal::Type*
@@ -98,6 +104,8 @@ mal::read_atom(Reader &reader) {
     }
     if (is_nil(*token))
         return new Nil();
+    else if (is_string(*token))
+        return new String(*token);
     else if (is_boolean(*token))
         return new Boolean(*token);
     else if (is_integer(*token))
@@ -146,6 +154,25 @@ mal::is_boolean(std::string const &value) {
     return value == "true" || value == "false";
 }
 
+/**
+ * Returns true if the value is a string, otherwise false.
+ * If the strings is not valid, an exception of type
+ * ReaderMissingClosingException is thrown.
+ * A string is defined as : ".*"
+ */
+bool
+mal::is_string(std::string const &value) {
+    std::regex is_str_re{"^\".*\"$"};
+    std::regex left_unbalance_re{"^[^\"]*\"$"};
+    std::regex right_unbalance_re{"^\"[^\"]*$"};
+    
+    if (std::regex_match(value, left_unbalance_re))
+        throw new ReaderMissingClosingException("\"");
+    if (std::regex_match(value, right_unbalance_re))
+        throw new ReaderMissingClosingException("\"");
+    return std::regex_match(value, is_str_re);
+}
+
 // Reader exceptions
 
 char const*
@@ -163,13 +190,13 @@ mal::ReaderUnknownTypeException::what() const throw() {
     return "reader: unknown type";
 }
 
-mal::ReadMissingClosingException::ReadMissingClosingException(std::string const &mismatch) :
+mal::ReaderMissingClosingException::ReaderMissingClosingException(std::string const &mismatch) :
     mal::ReaderException(), m_mismatch("") 
 {
     m_mismatch = "reader: missing closing '" + mismatch + "'";
 }
 
 char const*
-mal::ReadMissingClosingException::what() const throw() {
+mal::ReaderMissingClosingException::what() const throw() {
     return m_mismatch.c_str();
 }

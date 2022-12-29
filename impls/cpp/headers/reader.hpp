@@ -30,6 +30,7 @@ namespace mal {
     // TOOD: Refactor and federate all sequence type into one with subtypes ?
     mal::Type *read_list(Reader &reader);
     mal::Type *read_vector(Reader &reader);
+    mal::Type *read_map(Reader &reader);
 
     // Type predicate
 
@@ -37,6 +38,7 @@ namespace mal {
     bool is_nil(std::string const &value);
     bool is_keyword(std::string const &value);
     bool is_boolean(std::string const &value);
+    bool is_string(std::string const &value);
 
     // Reader exceptions
 
@@ -52,11 +54,11 @@ namespace mal {
         virtual char const *what() const throw();
     };
 
-    class ReadMissingClosingException : public ReaderException {
+    class ReaderMissingClosingException : public ReaderException {
         std::string m_mismatch;
     public:
-        ReadMissingClosingException(std::string const &mismatch);
-        virtual ~ReadMissingClosingException() = default;
+        ReaderMissingClosingException(std::string const &mismatch);
+        virtual ~ReaderMissingClosingException() = default;
         virtual char const *what() const throw();
     };
 }
