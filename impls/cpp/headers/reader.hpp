@@ -42,7 +42,11 @@ namespace mal {
 
     // Reader exceptions
 
-    struct ReaderException : public std::exception {
+    class ReaderException : public std::exception {
+        std::string m_msg;
+    public:
+        ReaderException();
+        ReaderException(std::string const &msg);
         virtual char const *what() const throw();
     };
 

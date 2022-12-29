@@ -2,12 +2,14 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 namespace mal
 {
     enum class TypeTag {
         LIST,
         VECTOR,
+        MAP,
         SYMBOL,
         INTEGER,
         NIL,
@@ -45,6 +47,16 @@ namespace mal
         virtual ~Vector();
 
         void add(Type *type);
+        virtual std::string repr() const;
+    };
+
+    class Map : public Type {
+        std::unordered_map<Type*, Type*> m_map;
+    public:
+        Map();
+        virtual ~Map();
+
+        void add(Type *key, Type *val);
         virtual std::string repr() const;
     };
 

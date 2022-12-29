@@ -45,6 +45,7 @@ mal::Vector::Vector() :
     mal::Type(TypeTag::VECTOR), m_vec() { }
 
 mal::Vector::~Vector() {
+    // TODO: delete items or not ?
     for ( auto* item : m_vec ) {
         delete item;
     }
@@ -65,6 +66,33 @@ mal::Vector::repr() const {
             acc += " ";
     }
     return acc + "]";
+}
+
+// Type Map
+
+mal::Map::Map() :
+    mal::Type(mal::TypeTag::MAP), m_map() { }
+
+mal::Map::~Map() {
+    // TODO: delete items or not ?
+}
+
+void
+mal::Map::add(Type *key, Type *val) {
+    m_map.insert(std::make_pair(key, val));
+}
+
+std::string
+mal::Map::repr() const {
+    std::string s = "{";
+    size_t index = 1;
+
+    for (auto const &[k, v] : m_map){
+        s += k->repr() + " " + v->repr();
+        if (index++ < m_map.size())
+            s += " ";
+    }
+    return s + "}";
 }
 
 

@@ -91,8 +91,26 @@ mal::read_vector(Reader &reader) {
 
 mal::Type*
 mal::read_map(Reader &reader) {
-    (void)reader;
-    return nullptr;
+    auto token = reader.next();
+    auto *map = new Map();
+    Type *key, *val;
+
+    while (auto token = reader.peek()) {
+        if (*token == "}") {
+            reader.next();
+            return map;
+        }
+        key = read_form(reader);
+        token = reader.peek();
+        if (*token == "}") {
+            reader.next();
+            throw new ReaderException("map must contains an even number of forms");
+        }
+        val = read_form(reader);
+        map->add(key, val);
+    }
+    delete map;
+    throw new ReaderMissingClosingException("}");
 }
 
 mal::Type*
@@ -175,9 +193,17 @@ mal::is_string(std::string const &value) {
 
 // Reader exceptions
 
+mal::ReaderException::ReaderException() :
+    m_msg("") { }
+
+mal::ReaderException::ReaderException(std::string const &msg) :
+    m_msg("reader: " + msg) { }
+
 char const*
 mal::ReaderException::what() const throw() {
-    return "reader: exception";
+    if (m_msg.empty())
+        return "reader: exception";
+    return m_msg.c_str();
 }
 
 char const*
