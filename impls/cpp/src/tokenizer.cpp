@@ -1,7 +1,7 @@
-#include "tokenizer.hpp"
+#include "../headers/tokenizer.hpp"
 
 Tokenizer::Tokenizer(std::string const &input) : 
-    m_input(input), 
+    m_input(input),
     m_start(0),
     m_current(0) { }
 
@@ -14,7 +14,6 @@ Tokenizer&
 Tokenizer::operator=(Tokenizer const &other) {
     if ( this == &other )
         return *this;
-    m_input = other.m_input;
     m_start = other.m_start;
     m_current = other.m_current;
     return *this;

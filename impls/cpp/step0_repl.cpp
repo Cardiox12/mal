@@ -1,5 +1,5 @@
 #include <iostream>
-#include "libs/linenoise.hpp"
+#include "headers/linenoise.hpp"
 
 char const *HIST_PATH = ".history.txt";
 
