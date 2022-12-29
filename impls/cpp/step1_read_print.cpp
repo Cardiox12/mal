@@ -39,7 +39,7 @@ int main() {
             break;
         try {
             std::cout << rep(line) << "\n";
-        } catch (mal::ReaderException *e) {
+        } catch (std::exception *e) {
             std::cout << e->what() << std::endl;
         }
         linenoise::AddHistory(line.c_str());

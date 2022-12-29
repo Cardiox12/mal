@@ -4,6 +4,7 @@
 #include <vector>
 #include <exception>
 #include <optional>
+#include <regex>
 
 class Tokenizer {
 public:
@@ -14,6 +15,7 @@ public:
         virtual char const *what() const throw();
     };
 private:
+    std::regex const    SYNTAX_RE{"[\\s,]*(~@|[\\[\\]{}()'`~^@]|\"(?:\\.|[^\\\"])*\"?|;.*|[^\\s\\[\\]{}('\"`,;)]*)"};
     std::string const   &m_input;
     size_t              m_start;
     size_t              m_current;
@@ -22,13 +24,8 @@ public:
     Tokenizer(Tokenizer const &other);
     Tokenizer &operator=(Tokenizer const &other);
 
-    std::optional<std::string> next();
-    bool is_non_special(char c) const;
-private:
-    std::string get_single_token();
-    std::string get_token() const;
-    char peek() const;
-    void advance();
-    bool is_end() const;
-    bool match(char c) const;
+    std::vector<std::string> tokenize() const;
+    static inline std::string trim(std::string s);
+    static inline std::string ltrim(std::string s);
+    static inline std::string rtrim(std::string s);
 };

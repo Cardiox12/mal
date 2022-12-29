@@ -41,13 +41,7 @@ mal::read_str(std::string const &input) {
 
 std::vector<std::string>
 mal::tokenize(std::string const &input) {
-    Tokenizer tokenizer(input);
-    std::vector<std::string> tokens;
-
-    while (auto token = tokenizer.next()) {
-        tokens.push_back(*token);
-    }
-    return tokens;
+    return Tokenizer{input}.tokenize();
 }
 
 mal::Type*
@@ -56,8 +50,8 @@ mal::read_form(Reader &reader) {
 
     if ( *token == "(" )
         return read_list(reader);
-    // else if ( *token == "[" )
-    //     return read_vector(reader);
+    else if ( *token == "[" )
+        return read_vector(reader);
     // if ( first == "{" )
         // TODO: manage hashmap
     return read_atom(reader);

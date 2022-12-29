@@ -19,101 +19,37 @@ Tokenizer::operator=(Tokenizer const &other) {
     return *this;
 }
 
-std::string
-Tokenizer::get_single_token() {
-    return std::string(1, m_input[m_current++]);
-}
+std::vector<std::string>
+Tokenizer::tokenize() const {
+    std::vector<std::string> tokens;
+    std::sregex_iterator begin{ m_input.begin(), m_input.end(), SYNTAX_RE };
+    std::sregex_iterator end{};
 
-std::optional<std::string>
-Tokenizer::next() {
-    while ( !is_end() ){
-        char c = m_input[m_current];
-        m_start = m_current;
-        switch (c)
-        {
-            // Whitespaces or commas
-            case '\t': break; case '\n': break; case '\v': break; 
-            case '\f': break; case '\r': break; case ',': break;
-            case ' ': break;
-
-            // Single character
-            case '[': return get_single_token(); case ']': return get_single_token();
-            case '(': return get_single_token(); case ')': return get_single_token();
-            case '{': return get_single_token(); case '}': return get_single_token();
-            case '`': return get_single_token(); case '@': return get_single_token(); 
-            case '^': return get_single_token(); case '\'': return get_single_token();
-            case '~':
-                advance();
-                // Try to match `~@`
-                if (match('@')) {
-                    advance();
-                    return get_token();
-                }
-                return get_single_token();
-            
-            // Double quote
-            case '"':
-                advance();
-                while (!is_end() && !match('"')){
-                    if (m_current + 1 < m_input.size() && match('\\') && m_input[m_current + 1] == '"')
-                        m_current += 2;
-                    else
-                        advance();
-                }
-                if ( !match('"') )
-                    throw new UnbalanceException(m_start);
-                advance();
-                return get_token();
-
-            // Comment
-            case ';':
-                advance();
-                while (!is_end() && !match('\n'))
-                    advance();
-                return get_token();
-
-            default:
-                if (is_non_special(c)) {
-                    while (!is_end() && is_non_special(peek()))
-                        advance();
-                    return get_token();
-                }
-        }
-        advance();
+    for ( auto it = begin ; it != end ; ++it ) {
+        tokens.push_back(Tokenizer::trim(it->str()));
     }
-    return {};
+    return tokens;
 }
 
 std::string
-Tokenizer::get_token() const {
-    return m_input.substr(m_start, m_current - m_start);
+Tokenizer::trim(std::string s) {
+    return Tokenizer::rtrim(Tokenizer::ltrim(s));
 }
 
-bool
-Tokenizer::is_end() const {
-    return m_current >= m_input.size();
+std::string
+Tokenizer::ltrim(std::string s) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](auto c){
+        return !std::isspace(c);
+    }));
+    return s;
 }
 
-void
-Tokenizer::advance() {
-    ++m_current;
-}
-
-char
-Tokenizer::peek() const {
-    return m_input[m_current];
-}
-
-bool
-Tokenizer::match(char c) const {
-    return m_input[m_current] == c;
-}
-
-bool
-Tokenizer::is_non_special(char c) const {
-    std::string special_charset = "\n\t\f\v {}('\"`,;)";
-
-    return special_charset.find(c) == std::string::npos;
+std::string
+Tokenizer::rtrim(std::string s) {
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](auto c){
+        return !std::isspace(c);
+    }).base(), s.end());
+    return s;
 }
 
 // Exceptions
