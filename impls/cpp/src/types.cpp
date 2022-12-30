@@ -11,6 +11,11 @@ mal::Type::is(mal::TypeTag tag) const {
     return m_tag == tag;
 }
 
+mal::TypeTag
+mal::Type::tag() const {
+    return m_tag;
+}
+
 // Type List
 
 mal::List::List() : 
@@ -140,6 +145,27 @@ mal::Integer::repr() const {
     return std::to_string(m_value);
 }
 
+mal::Integer*
+mal::Integer::add(Integer *x) const {
+    return new Integer(m_value + x->m_value);
+}
+
+mal::Integer*
+mal::Integer::sub(Integer *x) const {
+    return new Integer(m_value - x->m_value);
+}
+
+mal::Integer*
+mal::Integer::div(Integer *x) const {
+    return new Integer(m_value / x->m_value);
+}
+
+mal::Integer*
+mal::Integer::mult(Integer *x) const {
+    return new Integer(m_value * x->m_value);
+}
+
+
 // Type boolean
 
 mal::Boolean::Boolean(bool value) :
@@ -169,3 +195,33 @@ std::string
 mal::String::repr() const {
     return m_value;
 }
+
+// Type exceptions
+
+mal::TypeException::TypeException(std::string const &msg) :
+    m_msg("type: " + msg) { }
+
+char const*
+mal::TypeException::what() const throw() {
+    return m_msg.c_str();
+}
+
+// Type assert
+
+std::string
+mal::get_type_name(mal::TypeTag tag) {
+    auto it = G_TYPE_NAME.find(tag);
+
+    if (it != G_TYPE_NAME.end())
+        return it->second;
+    return "";
+}
+
+bool
+mal::assert_types(mal::Type*) {
+    return false;
+}
+
+mal::TypeAssert::TypeAssert(mal::TypeTag tag) : m_tag(tag) { }
+
+void mal::TypeAssert::operator()() { }
