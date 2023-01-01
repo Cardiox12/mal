@@ -21,6 +21,9 @@ mal::Type::tag() const {
 mal::List::List() : 
     mal::Type(TypeTag::LIST), m_list() { }
 
+mal::List::List(std::vector<mal::Type*> const &list) :
+    mal::Type(TypeTag::LIST), m_list(list) { }
+
 mal::List::~List() {
     for ( auto* item : m_list ) {
         delete item;
@@ -42,6 +45,18 @@ mal::List::repr() const {
             acc += " ";
     }
     return acc + ")";
+}
+
+std::vector<mal::Type*> const&
+mal::List::value() const {
+    return m_list;
+}
+
+mal::List*
+mal::List::rest() const {
+    return new List(
+        std::vector<Type*>()
+    );
 }
 
 // Type vector
@@ -129,6 +144,11 @@ mal::Symbol::Symbol(std::string const &symbol) :
 
 std::string
 mal::Symbol::repr() const {
+    return m_symbol;
+}
+
+std::string const&
+mal::Symbol::value() const {
     return m_symbol;
 }
 

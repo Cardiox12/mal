@@ -17,6 +17,7 @@ namespace mal
         KEYWORD,
         BOOLEAN,
         STRING,
+        FUNCTION
     };
 
     const std::unordered_map<TypeTag, const char*> G_TYPE_NAME = {
@@ -48,10 +49,14 @@ namespace mal
         std::vector<Type*> m_list;
     public:
         List();
+        List(std::vector<Type*> const &list);
         virtual ~List();
 
         void add(Type *type);
         virtual std::string repr() const;
+        std::vector<Type*> const &value() const;
+
+        List *rest() const;
     };
 
     class Vector : public Type {
@@ -100,6 +105,7 @@ namespace mal
         virtual ~Symbol() = default;
 
         virtual std::string repr() const;
+        std::string const &value() const;
     };
 
     class Integer : public Type {
