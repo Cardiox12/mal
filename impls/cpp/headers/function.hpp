@@ -4,17 +4,31 @@
 #include <iterator>
 #include <functional>
 
+/**
+ * Mal_ARGS_IT
+ * Mal_ARGS_IT macro defines a pair of iterator from @arg mal_args.
+ * Mal_ARGS_IT call is necessary before any use of macro Mal_ARG.
+ */
 #define Mal_ARGS_IT(mal_args)                           \
     auto mal_args_begin_ = mal_args->value().begin();   \
     auto mal_args_end_ = mal_args->value().end();
 
-
+/**
+ * Mal_ARG
+ * Mal_ARG macro allow to define a variable @arg name with type @arg type.
+ * The Mal_ARG macro pop argument from macro Mal_ARGS_IT.
+ * A call to Mal_ARGS_IT is necessary before any call to Mal_ARG macro.
+ */
 #define Mal_ARG(type, name)                             \
     if (mal_args_begin_ == mal_args_end_) {             \
         throw new std::exception{};                     \
     }                                                   \
     type name = static_cast<type>(*mal_args_begin_++);
 
+/**
+ * Mal_VAR
+ * Mal_VAR macro allow to define a variable @arg name with type @arg type.
+ */
 #define Mal_VAR(type, name, val) type name = static_cast<type>(val)
 
 namespace mal
