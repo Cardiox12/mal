@@ -2,14 +2,19 @@
 
 #include <functional>
 #include <unordered_map>
+#include <optional>
+#include <exception>
 #include "types.hpp"
 #include "function.hpp"
+// TODO: remove, debug purpose only
+#include <iostream>
 
 namespace mal
 {
     using env_t = std::unordered_map<std::string, Type*>;
     // TODO: use a type table ? See the type implementation of SICP.
-    static const env_t repl_env = {
+    // table is good for coercion, etc...
+    static env_t repl_env = {
         {
             "+",
             new Function([](List *args) {
@@ -54,5 +59,20 @@ namespace mal
                 return x->div(y);
             })
         }
+    };
+
+    std::optional<Type*> get_env(env_t &env, std::string const &key);
+    void set_env(env_t &env, std::string const &key, Type *value);
+
+    class EnvException : public std::exception {
+        std::string m_msg;
+    public:
+        EnvException(std::string const &msg);
+        char const *what() const throw() override;
+    };
+
+    struct EnvNotFoundException : public EnvException {
+        EnvNotFoundException(std::string const &key);
+        char const *what() const throw() override;
     };
 }

@@ -12,21 +12,27 @@ void config_linenoise() {
     linenoise::LoadHistory(HIST_PATH);
 }
 
+mal::Type *EVAL(mal::Type *ast, mal::env_t &env);
+
 mal::Type*
-eval_ast(mal::Type *ast, mal::env_t const &env) {
-    switch (ast->tag())
-    {
-    case mal::TypeTag::SYMBOL: {
+eval_ast(mal::Type *ast, mal::env_t &env) {
+
+    if (ast->is(mal::TypeTag::SYMBOL)) {
         Mal_VAR(mal::Symbol*, symbol, ast);
+        auto value = mal::get_env(env, symbol->value());
 
-        auto it = env.find(symbol->value());
+        if (!value)
+            throw new mal::EnvNotFoundException(symbol->value());
+        return *value;
+    } 
+    else if (ast->is(mal::TypeTag::LIST)) {
+        Mal_VAR(mal::List*, list, ast);
+        mal::List *new_list = new mal::List();
 
-        if ( it == env.end() )
-            return ast;
-        return it->second;
-    }
-    case mal::TypeTag::LIST:
-        break;
+        for ( auto val : list->value() ){
+            new_list->add(EVAL(val, env));
+        }
+        return new_list;
     }
     return ast;
 }
@@ -35,7 +41,7 @@ mal::Type *READ(std::string const &input) {
     return mal::read_str(input);
 }
 
-mal::Type *EVAL(mal::Type *ast, mal::env_t const &env) {
+mal::Type *EVAL(mal::Type *ast, mal::env_t &env) {
     if (!ast->is(mal::TypeTag::LIST)) {
         return eval_ast(ast, env);
     }
@@ -44,7 +50,11 @@ mal::Type *EVAL(mal::Type *ast, mal::env_t const &env) {
     if (list->value().empty()) {
            return ast;
     }
-    return eval_ast(ast, env);
+    Mal_VAR(mal::List*, result, eval_ast(ast, env));
+    Mal_VAR(mal::Function*, fn, result->value().front());
+    Mal_VAR(mal::List*, args, result);
+    
+    return (*fn)(args->rest());
 }
 
 std::string PRINT(mal::Type *type) {

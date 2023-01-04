@@ -1,6 +1,8 @@
 #include "../headers/types.hpp"
 #include <format>
 
+#include <iostream>
+
 // Type
 
 mal::Type::Type(mal::TypeTag tag) :
@@ -55,7 +57,7 @@ mal::List::value() const {
 mal::List*
 mal::List::rest() const {
     return new List(
-        std::vector<Type*>()
+        std::vector<Type*>(m_list.begin() + 1, m_list.end())
     );
 }
 
@@ -182,6 +184,7 @@ mal::Integer::div(Integer *x) const {
 
 mal::Integer*
 mal::Integer::mult(Integer *x) const {
+    std::cout << m_value << " * " << x->m_value << " = " << m_value * x->m_value << std::endl;
     return new Integer(m_value * x->m_value);
 }
 

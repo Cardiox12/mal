@@ -7,7 +7,9 @@ STEP_0_RULE = step0_repl
 SRCS =	src/tokenizer.cpp\
 		src/reader.cpp\
 		src/types.cpp\
-		src/printer.cpp
+		src/printer.cpp\
+		src/env.cpp\
+		src/function.cpp
 
 STEP_1 =	step1_read_print.cpp $(SRCS)
 STEP_1_RULE = step1_read_print
@@ -16,7 +18,7 @@ STEP_1_RULE_DEBUG = _step1_read_print
 STEP_2 = step2_eval.cpp $(SRCS)
 STEP_2_RULE = step2_eval
 
-all: $(STEP_0_RULE) $(STEP_1_RULE)
+all: $(STEP_0_RULE) $(STEP_1_RULE) $(STEP_2_RULE)
 
 $(STEP_0_RULE): $(STEP_0)
 	$(CXX) $(CXXFLAGS) -o $@ $<
