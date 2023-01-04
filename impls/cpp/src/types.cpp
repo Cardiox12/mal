@@ -184,7 +184,6 @@ mal::Integer::div(Integer *x) const {
 
 mal::Integer*
 mal::Integer::mult(Integer *x) const {
-    std::cout << m_value << " * " << x->m_value << " = " << m_value * x->m_value << std::endl;
     return new Integer(m_value * x->m_value);
 }
 
