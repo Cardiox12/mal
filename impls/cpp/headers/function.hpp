@@ -53,16 +53,17 @@ namespace mal
      * assert_arity
      * assert_arity check that the @arg size is equal to @arg args size.
      * If the arity isn't equal, an exception is thrown.
-     * 
+     * @return arity
      */
-    void assert_arity(List *args, size_t size);
+    size_t assert_arity(List *args, size_t size);
 
     /**
      * assert_arity
      * assert_airty check that @arg args is in the arity range 
      * between @arg start and @arg stop.
+     * @return arity
      */
-    void assert_arity(List *args, size_t start, size_t stop);
+    size_t assert_arity(List *args, size_t start, size_t stop);
 
     class ArityException : public std::exception {
         std::string m_message;

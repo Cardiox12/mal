@@ -17,20 +17,23 @@ mal::Function::repr() const {
 
 // Arity
 
-void
+size_t
 mal::assert_arity(mal::List *args, size_t size) {
-    if (args->value().size() != size) {
+    auto const argsize = args->value().size();
+    if (argsize != size) {
         throw new ArityException(size);
     }
+    return argsize;
 }
 
-void
+size_t
 mal::assert_arity(mal::List *args, size_t start, size_t stop) {
-    auto size = args->value().size();
+    auto const argsize = args->value().size();
 
-    if (size < start || size > stop) {
+    if (argsize < start || argsize > stop) {
         throw new ArityException(start);
     }
+    return argsize;
 }
 
 // Exception
