@@ -66,6 +66,7 @@ namespace mal
         virtual ~Vector();
 
         void add(Type *type);
+        std::vector<Type*> const &value() const;
         virtual std::string repr() const;
     };
 

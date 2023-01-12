@@ -73,6 +73,11 @@ mal::Vector::~Vector() {
     }
 }
 
+std::vector<mal::Type*> const&
+mal::Vector::value() const {
+    return m_vec;
+}
+
 void
 mal::Vector::add(Type *type) {
     m_vec.push_back(type);
