@@ -77,6 +77,7 @@ namespace mal
         virtual ~Map();
 
         void add(Type *key, Type *val);
+        std::unordered_map<Type*, Type*> const &value() const;
         virtual std::string repr() const;
     };
 

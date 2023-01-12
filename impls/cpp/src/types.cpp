@@ -109,6 +109,11 @@ mal::Map::add(Type *key, Type *val) {
     m_map.insert(std::make_pair(key, val));
 }
 
+std::unordered_map<mal::Type*, mal::Type*> const&
+mal::Map::value() const {
+    return m_map;
+}
+
 std::string
 mal::Map::repr() const {
     std::string s = "{";
