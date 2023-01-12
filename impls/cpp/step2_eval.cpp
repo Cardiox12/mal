@@ -29,10 +29,28 @@ eval_ast(mal::Type *ast, mal::env_t &env) {
         Mal_VAR(mal::List*, list, ast);
         mal::List *new_list = new mal::List();
 
-        for ( auto val : list->value() ){
+        for ( auto &val : list->value() ){
             new_list->add(EVAL(val, env));
         }
         return new_list;
+    }
+    else if (ast->is(mal::TypeTag::VECTOR)) {
+        Mal_VAR(mal::Vector*, vec, ast);
+        mal::Vector *new_vec = new mal::Vector();
+
+        for ( auto &val : vec->value() ){
+            new_vec->add(EVAL(val, env));
+        }
+        return new_vec;
+    }
+    else if (ast->is(mal::TypeTag::MAP)) {
+        Mal_VAR(mal::Map*, map, ast);
+        mal::Map *new_map = new mal::Map();
+
+        for ( auto &[key, val] : map->value() ) {
+            new_map->add(key, EVAL(val, env));
+        }
+        return new_map;
     }
     return ast;
 }
