@@ -162,6 +162,11 @@ mal::Integer::Integer(int value) :
 mal::Integer::Integer(std::string const &value) :
     mal::Type(mal::TypeTag::INTEGER), m_value(std::stoi(value)) { }
 
+int
+mal::Integer::value() const {
+    return m_value;
+}
+
 std::string
 mal::Integer::repr() const {
     return std::to_string(m_value);

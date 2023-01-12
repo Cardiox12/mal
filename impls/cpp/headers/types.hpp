@@ -115,6 +115,7 @@ namespace mal
         Integer(std::string const &value);
         virtual ~Integer() = default;
 
+        int value() const;
         virtual std::string repr() const;
         Integer *add(Integer *x) const;
         Integer *sub(Integer *x) const;
