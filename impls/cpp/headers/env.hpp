@@ -29,9 +29,11 @@ namespace mal
         {
             "-",
             new Function([](List *args) {
-                mal::assert_arity(args, 2);
+                auto const argsize = mal::assert_arity(args, 1, 2);
                 Mal_ARGS_IT(args);
                 Mal_ARG(Integer*, x);
+                if (argsize == 1)
+                    return new Integer(-x->value());
                 Mal_ARG(Integer*, y);
 
                 return x->sub(y);
